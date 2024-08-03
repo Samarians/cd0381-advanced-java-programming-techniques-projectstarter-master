@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -29,8 +31,14 @@ public final class ConfigurationLoader {
    */
   public CrawlerConfiguration load() {
     // TODO: Fill in this method.
+    try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+      return read(reader);
+    } catch (IOException ex) {
+      ex.printStackTrace();
+      return null;
+    }
 
-    return new CrawlerConfiguration.Builder().build();
+//    return new CrawlerConfiguration.Builder().build();
   }
 
   /**
@@ -39,13 +47,20 @@ public final class ConfigurationLoader {
    * @param reader a Reader pointing to a JSON string that contains crawler configuration.
    * @return a crawler configuration
    */
-  public static CrawlerConfiguration read(Reader reader) throws IOException {
+  public static CrawlerConfiguration read(Reader reader)  {
     // This is here to get rid of the unused variable warning.
     Objects.requireNonNull(reader);
     // TODO: Fill in this method
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
-    return objectMapper.readValue(reader, CrawlerConfiguration.Builder.class).build();
+
+    try {
+      CrawlerConfiguration.Builder builder = objectMapper.readValue(reader, CrawlerConfiguration.Builder.class);
+      return builder.build();
+    } catch (IOException ex) {
+      ex.printStackTrace();
+      return null;
+    }
   }
 }

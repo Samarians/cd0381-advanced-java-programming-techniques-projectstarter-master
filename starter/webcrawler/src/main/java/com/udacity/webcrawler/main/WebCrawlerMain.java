@@ -42,13 +42,19 @@ public final class WebCrawlerMain {
     if (!config.getResultPath().isEmpty()) {
       resultWriter.write(Path.of(config.getResultPath()));
     } else {
-      //To test whether result path is empty
-      System.out.println("Result path is empty");
-      Writer output = new OutputStreamWriter(System.out);
-      resultWriter.write(output);
+      Writer writer = new OutputStreamWriter(System.out);
+      resultWriter.write(writer);
     }
 
     // TODO: Write the profile data to a text file (or System.out if the file name is empty)
+    if (!config.getProfileOutputPath().isEmpty()) {
+      profiler.writeData(Path.of(config.getProfileOutputPath()));
+    } else {
+      try(Writer writer = new BufferedWriter(new OutputStreamWriter(System.out))) {
+        profiler.writeData(writer);
+        writer.flush();
+    }
+  }
   }
 
   public static void main(String[] args) throws Exception {
@@ -61,3 +67,4 @@ public final class WebCrawlerMain {
     new WebCrawlerMain(config).run();
   }
 }
+

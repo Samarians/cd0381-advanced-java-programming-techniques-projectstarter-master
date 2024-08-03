@@ -31,15 +31,15 @@ public final class CrawlResultWriter {
    *
    * @param path the file path where the crawl result data should be written.
    */
-  public void write(Path path) throws IOException {
+  public void write(Path path) {
     // This is here to get rid of the unused variable warning.
     Objects.requireNonNull(path);
     // TODO: Fill in this method.
     try (Writer writer = Files.newBufferedWriter(path)){
       write(writer);
     }
-    catch (IOException e){
-      e.getLocalizedMessage();
+    catch (IOException ex){
+      ex.printStackTrace();
     }
   }
 
@@ -48,7 +48,7 @@ public final class CrawlResultWriter {
    *
    * @param writer the destination where the crawl result data should be written.
    */
-  public void write(Writer writer) throws IOException {
+  public void write(Writer writer) {
     // This is here to get rid of the unused variable warning.
     Objects.requireNonNull(writer);
     // TODO: Fill in this method.
@@ -56,8 +56,8 @@ public final class CrawlResultWriter {
     objectMapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
     try {
       objectMapper.writeValue(writer, result);
-    } catch (IOException e) {
-      e.getLocalizedMessage();
+    } catch (IOException ex) {
+      ex.printStackTrace();
     }
 
   }
